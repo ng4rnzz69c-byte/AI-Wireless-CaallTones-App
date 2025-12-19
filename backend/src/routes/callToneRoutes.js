@@ -9,6 +9,7 @@ const {
 } = require('../controllers/callToneController');
 const { protect } = require('../middleware/auth');
 const { upload } = require('../config/storage');
+const { apiLimiter, uploadLimiter } = require('../middleware/rateLimiter');
 
 const router = express.Router();
 
@@ -16,11 +17,11 @@ const router = express.Router();
 router.use(protect);
 
 // Routes
-router.get('/', getAllCallTones);
-router.get('/ai-generated', getAIGeneratedCallTones);
-router.get('/:id', getCallTone);
-router.post('/upload', upload.single('file'), uploadCallTone);
-router.delete('/:id', deleteCallTone);
-router.put('/:id/select', selectCallTone);
+router.get('/', apiLimiter, getAllCallTones);
+router.get('/ai-generated', apiLimiter, getAIGeneratedCallTones);
+router.get('/:id', apiLimiter, getCallTone);
+router.post('/upload', uploadLimiter, upload.single('file'), uploadCallTone);
+router.delete('/:id', apiLimiter, deleteCallTone);
+router.put('/:id/select', apiLimiter, selectCallTone);
 
 module.exports = router;

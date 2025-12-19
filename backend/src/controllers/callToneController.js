@@ -126,7 +126,7 @@ const deleteCallTone = async (req, res, next) => {
     }
 
     // Delete file from local storage if not using S3
-    if (!callTone.fileUrl.includes('amazonaws.com')) {
+    if (!callTone.fileUrl.startsWith('https://') && !callTone.fileUrl.startsWith('http://')) {
       const filePath = path.join(__dirname, '../../', callTone.fileUrl);
       try {
         await fs.unlink(filePath);

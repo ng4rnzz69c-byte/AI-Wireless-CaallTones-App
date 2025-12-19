@@ -3,6 +3,7 @@ const { body } = require('express-validator');
 const { signup, login, getMe } = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 const { validate } = require('../middleware/validation');
+const { authLimiter, apiLimiter } = require('../middleware/rateLimiter');
 
 const router = express.Router();
 
@@ -32,8 +33,8 @@ const loginValidation = [
 ];
 
 // Routes
-router.post('/signup', signupValidation, validate, signup);
-router.post('/login', loginValidation, validate, login);
-router.get('/me', protect, getMe);
+router.post('/signup', authLimiter, signupValidation, validate, signup);
+router.post('/login', authLimiter, loginValidation, validate, login);
+router.get('/me', apiLimiter, protect, getMe);
 
 module.exports = router;
