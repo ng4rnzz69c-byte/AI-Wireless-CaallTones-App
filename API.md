@@ -429,7 +429,37 @@ Check if the server is running.
 
 ## Rate Limiting
 
-Currently, there is no rate limiting implemented. For production use, consider adding rate limiting middleware to prevent abuse.
+The API implements rate limiting to prevent abuse:
+
+### Authentication Endpoints
+- **Endpoints**: `/api/auth/signup`, `/api/auth/login`
+- **Limit**: 5 requests per 15 minutes per IP address
+- **Note**: Successful requests are not counted against the limit
+
+### File Upload Endpoints
+- **Endpoints**: `/api/calltones/upload`
+- **Limit**: 10 uploads per hour per IP address
+
+### General API Endpoints
+- **All other authenticated endpoints**
+- **Limit**: 100 requests per 15 minutes per IP address
+
+### Rate Limit Response
+When the rate limit is exceeded, the API returns:
+- **Status Code**: 429 (Too Many Requests)
+- **Response Body**:
+```json
+{
+  "success": false,
+  "message": "Too many requests from this IP, please try again later."
+}
+```
+
+### Rate Limit Headers
+The API includes standard rate limit headers in responses:
+- `RateLimit-Limit`: Maximum number of requests allowed
+- `RateLimit-Remaining`: Number of requests remaining
+- `RateLimit-Reset`: Time when the rate limit resets (Unix timestamp)
 
 ---
 

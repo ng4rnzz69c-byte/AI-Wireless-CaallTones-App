@@ -219,6 +219,16 @@ The application will automatically use S3 for file storage when AWS credentials 
 ### Health Check
 - `GET /api/health` - Check server status
 
+## Rate Limiting
+
+The application implements rate limiting to prevent abuse:
+
+- **Authentication endpoints** (`/api/auth/signup`, `/api/auth/login`): 5 requests per 15 minutes per IP
+- **File upload endpoint** (`/api/calltones/upload`): 10 uploads per hour per IP
+- **General API endpoints**: 100 requests per 15 minutes per IP
+
+If you exceed the rate limit, you'll receive a 429 (Too Many Requests) response.
+
 ## Troubleshooting
 
 ### MongoDB Connection Issues
